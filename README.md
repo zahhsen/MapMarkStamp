@@ -1,8 +1,8 @@
 ##  A Taipei City Map you can Mark ( in old chinese style )
 中國風的臺北自定地圖，
-[demo在此](http://senhung.acsite.org/jiaba/index.html)
+[demo在此](http://senhung.acsite.org/jiaba/index.html)（請用Chrome瀏覽器）
 
-*尚未完成，FireFox很慢，手機不能看 :joy:* 
+*尚未完成，FireFox很慢，手機不能看 :sob:* 
 
 ### 功能說明
 * 可以用印章標注出你去過的點以及時間，以及記錄當時事件
