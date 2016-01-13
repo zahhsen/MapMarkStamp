@@ -1,0 +1,223 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <title>皇上呷奔</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css">
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="/bower_components/modernizr/modernizr.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkiE7EXT8A4Gmuy6PJ02PkVMgfROjitoY&signed_in=true"></script>
+    <script src="/bower_components/moment/moment.js"></script>
+        <script type="text/javascript" src="/bower_components/moment/locale/zh-tw.js"></script>
+   <!-- endbuild -->
+</head>
+
+<body>
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!--下方導覽列-->
+    <div id="navbar" class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="#">臺北市美食地圖</a>
+            <ul class="nav navbar-nav">
+                <li></li>
+                <li><a href="#" data-toggle="modal" id="toClear" data-target="#deleteConfirm">清除地圖</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#newNotePanel">增加新的</a></li>
+            </ul>
+        </div>
+    </div>
+    <!--主畫面-->
+    <div class="container-fluid">
+        <div class="row">
+            <!--地圖部分-->
+            <div id="map" class="col-xs-12 main">
+            </div>
+            <div id="compass"><img src="images/compass2.png" height="200" width="200"></div>
+            <div id="exit"><span class="glyphicon glyphicon-share-alt animated rotateIn"></span></div>
+            <div id="closePop"><span class="glyphicon glyphicon-share-alt animated rotateIn"></span></div>
+            <!--搜尋面板-->
+            <div id="search">
+                <!--開始日期-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <label class="small">搜尋記事從：</label>
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <!--目標日期-->
+                        <label class="small">到：</label>
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker2'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <center>
+                            <label id="searching" class="small">回溯中⋯⋯<span class="glyphicon glyphicon-repeat animated rotateIn infinite"></span></label>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--修改使用者資料：跳出區塊-->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="deleteConfirm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">確定刪除記事？</h4>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal" id="confirmBtn">確定</button>
+                    <button class="btn btn-primary" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--加入新記事：跳出區塊-->
+    <div class="modal fade" id="newNotePanel" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">今天我來這吃</h4>
+                </div>
+                <div class="modal-body" id="newNoteBody">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="inputRestaurant">餐廳名</label>
+                            <input id="restaurant" class="form-control needReset" type="text" placeholder="輸入餐廳名稱...">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputRestaurant">地址</label>
+                            <input id="address" class="form-control needReset" type="text" placeholder="輸入台北市的地址，或餐廳名稱加上“臺北”搜尋...">
+                            <span class="label" id="addressHelp"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputRestaurant">餐廳評價</label>
+                            <textarea id="review" class="form-control needReset" type="text" placeholder="我對餐廳的評價..."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label for="inputDate">呷奔日期</label>
+                                    <div class='input-group date' id="datetimepickernew">
+                                        <input type='text' class="form-control" id="dateInput" />
+                                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                    <span class="label label-danger" id="dateHelp"></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label for="inputStamp">選個章吧</label>
+                                    <p>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="stamp" id="stamp1" value="1" checked="checked">
+                                            <img src="stamp1.svg" width="60" height="60" style="transform: rotate(90deg)">
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="stamp" id="stamp2" value="2">
+                                            <img src="stamp2.svg" width="60" height="60" style="transform: rotate(90deg)">
+                                        </label>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="cancelBtn" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitAddress">送出記事</button>
+                </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div id="moveInfo">
+        <div id="mapTitleGroup">
+            <div class="titleBox" id='mapTitle'>
+                <div id='mapTitleText'>臺北全地圖</div>
+            </div>
+            <div class="titleBox" id='distTitle'>
+                <div id='distTitleText'>臺北市</div>
+            </div>
+        </div>
+        <div class="cards" id='titleCard'>
+            <div id="titleLabel" class="labels"><span id="titleSpan"></span></div>
+        </div>
+        <div class="cards" id='dateCard'>
+            <div id="dateLabel" class="labels"><span id="dateSpan"></span>　<a href="#" data-toggle="modal" data-target="#deleteConfirm"><span id="toDelete" class="glyphicon glyphicon-trash" ></span></a>
+            </div>
+        </div>
+        <div class="cards" id='reviewCard'>
+            <div id="reviewText" class="labels"><span id="reviewSpan"></span></div>
+        </div>
+    </div>
+    <!--單筆記事查看：右邊滑入-->
+    <!--svg的填色定義-->
+    <defs>
+        <radialGradient id="distFill">
+            <stop offset="71%" stop-color="#ede0a1" />
+            <stop offset="100%" stop-color="#4da7af" />
+        </radialGradient>
+    </defs>
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/d3/d3.js"></script>
+    <script src="/bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>
+    <script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:js(.) scripts/plugins.js -->
+    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
+    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/transition.js"></script>
+    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/button.js"></script>
+    <!-- endbuild -->
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+    (function(b, o, i, l, e, r) {
+        b.GoogleAnalyticsObject = l;
+        b[l] || (b[l] =
+            function() {
+                (b[l].q = b[l].q || []).push(arguments)
+            });
+        b[l].l = +new Date;
+        e = o.createElement(i);
+        r = o.getElementsByTagName(i)[0];
+        e.src = 'https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e, r)
+    }(window, document, 'script', 'ga'));
+    ga('create', 'UA-XXXXX-X');
+    ga('send', 'pageview');
+    </script>
+</body>
+
+</html>
